@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import sys
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery
+from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 
 class Model:
     def __init__(self):

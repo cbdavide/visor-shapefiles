@@ -1,16 +1,17 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import sys
-from PyQt5 import QtSql
+from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 
-db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+db = QSqlDatabase.addDatabase('QSQLITE')
 db.setDatabaseName('app.db')
 
 if not db.open():
     print("Couldn't open the database.")
     sys.exit(1)
 
-query = QtSql.QSqlQuery()
+query = QSqlQuery()
 
 r = query.exec_("CREATE TABLE users(email varchar(50) primary key, "
     " password varchar(50))")

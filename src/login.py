@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 import sys
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QPushButton,
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import (QWidget, QPushButton,
     QHBoxLayout, QVBoxLayout, QApplication, QLabel, QLineEdit,
     QDesktopWidget, QMessageBox)
-
 from model import Model
 
 class CenteredWindow:
@@ -29,21 +29,21 @@ class CenteredWindow:
 class Window(QWidget, CenteredWindow):
 
     def __init__(self, model):
-        super().__init__()
+        super(Window, self).__init__()
         self.model = model
 
         self.initUI()
 
     def initUI(self):
         #Labels
-        emailLabel = QLabel('Correo:')
-        passLabel = QLabel('Contraseña')
+        emailLabel = QLabel(u'Correo:')
+        passLabel = QLabel(u'Contraseña')
         #Text Field
         self.emailField = QLineEdit()
         self.passField = QLineEdit()
         self.passField.setEchoMode(QLineEdit.Password)
         #Buttons
-        sendButton = QPushButton('Ingresar')
+        sendButton = QPushButton(u'Ingresar')
         sendButton.clicked.connect(self.handler)
 
         #Settig up the layouts
@@ -67,14 +67,14 @@ class Window(QWidget, CenteredWindow):
 
         self.setFixedSize(300, 200)
         self.center()
-        self.setWindowTitle('Iniciar Sesión')
+        self.setWindowTitle(u'Iniciar Sesión')
         self.show()
 
     def displayError(self):
        msg = QMessageBox()
        msg.setIcon(QMessageBox.Critical)
-       msg.setText("Usuario o contraseña incorrectos.")
-       msg.setWindowTitle("Error de autenticación")
+       msg.setText(u'Usuario o contraseña incorrectos.')
+       msg.setWindowTitle(u'Error de autenticación')
        msg.setStandardButtons(QMessageBox.Ok)
        msg.buttonClicked.connect(self.msgbtn)
        msg.exec_()
