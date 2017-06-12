@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import sys
-from model import Model
-from VisorShapefiles import VisorShapefiles
+from  model.users import Model
+from visor.VisorShapefiles import VisorShapefiles
+from qgis.core import QgsApplication
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QPushButton,
     QHBoxLayout, QVBoxLayout, QApplication, QLabel, QLineEdit,
     QDesktopWidget, QMessageBox, QMainWindow)
-from qgis.core import *
-from qgis.gui import *
 
 qgis_prefix = "/usr"
 
@@ -92,9 +91,7 @@ class Window(QWidget, CenteredWindow):
         email = self.emailField.text()
         password = self.passField.text()
         if self.model.checkUser(email, password):
-            # self.mainWindow = QMainWindow()
             self.ui = VisorShapefiles()
-            # self.ui.setupUi(self.mainWindow)
             self.ui.show()
             self.close()
         else:
@@ -105,11 +102,11 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     QgsApplication.setPrefixPath(qgis_prefix, True)
     QgsApplication.initQgis()
-    model = Model()
-    # app = QApplication(sys.argv)
-    ex = Window(model)
-    r = app.exec_()
 
+    model = Model()
+    ex = Window(model)
+
+    r = app.exec_()
 
     QgsApplication.exitQgis()
     sys.exit(r)

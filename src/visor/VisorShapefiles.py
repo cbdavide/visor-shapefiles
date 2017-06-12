@@ -2,41 +2,16 @@
 
 import sys
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import SIGNAL, QFileInfo
+from PyQt4.QtGui import QMainWindow, QColor, QVBoxLayout, QAction, QFileDialog
 
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import QgsVectorLayer, QgsVectorLayer, QgsMapLayerRegistry
+from qgis.gui import (QgsMapCanvas, QgsMapToolPan, QgsMapToolZoom, QgsMapCanvasLayer)
 
-from visor_shapefiles_ui import Ui_MainWindow
+from WindowUI import Ui_MainWindow
+from tools import PointMapTool
 
-qgis_prefix = "/usr"
-
-class PointMapTool(QgsMapToolEmitPoint):
-
-    def __init__(self, canvas):
-        self.canvas = canvas
-        QgsMapToolEmitPoint.__init__(self, self.canvas)
-
-        self.point = None
-        self.m = None
-
-    def canvasPressEvent(self, e):
-        # if self.m is not None:
-        #     self.canvas.scene().removeItem(self.m)
-
-        self.point = self.toMapCoordinates(e.pos())
-        # print self.point.x(), self.point.y()
-
-        self.m = QgsVertexMarker(self.canvas)
-        self.m.setCenter(self.point)
-
-        self.m.setColor(QColor(0, 255, 0))
-        self.m.setIconSize(5)
-
-        self.m.setIconType(QgsVertexMarker.ICON_X)
-        self.m.setPenWidth(3)
-
+qgis_prefix = '/usr'
 
 class VisorShapefiles(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -68,7 +43,6 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         self.actionPoint = QAction('Point', self.frame)
         self.actionPoint.setCheckable(True)
         self.connect(self.actionPoint, SIGNAL('triggered()'), self.point)
-
 
         self.toolbar = self.addToolBar('Map')
         self.toolbar.addAction(self.actionAddLayer)
