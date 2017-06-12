@@ -22,7 +22,7 @@ class PointMapTool(QgsMapToolEmitPoint):
         self.m = QgsVertexMarker(self.canvas)
         self.m.setCenter(self.point)
 
-        self.m.setColor(QColor(0, 255, 0))
+        self.m.setColor(QColor(34, 167, 240))
         self.m.setIconSize(5)
 
         self.m.setIconType(QgsVertexMarker.ICON_X)
