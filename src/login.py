@@ -2,13 +2,10 @@
 import sys
 from  model.users import Model
 from visor.VisorShapefiles import VisorShapefiles
-from qgis.core import QgsApplication
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QPushButton,
-    QHBoxLayout, QVBoxLayout, QApplication, QLabel, QLineEdit,
-    QDesktopWidget, QMessageBox, QMainWindow)
-
-qgis_prefix = "/usr"
+    QHBoxLayout, QVBoxLayout,  QLabel, QLineEdit, QDesktopWidget, QMessageBox,
+    QMainWindow)
 
 class CenteredWindow:
     '''
@@ -96,17 +93,3 @@ class Window(QWidget, CenteredWindow):
             self.close()
         else:
             self.displayError()
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    QgsApplication.setPrefixPath(qgis_prefix, True)
-    QgsApplication.initQgis()
-
-    model = Model()
-    ex = Window(model)
-
-    r = app.exec_()
-
-    QgsApplication.exitQgis()
-    sys.exit(r)
