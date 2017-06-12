@@ -1,6 +1,8 @@
 # VisorShapefiles
 
-Visor básico de shapefiles hecho con Python2, PQt y QGis basado en diferentes tutoriales para la construcción de un visor de shapefiles.
+Visor básico de shapefiles hecho con Python2, PyQt y QGis basado en diferentes tutoriales para la construcción de un visor de shapefiles.
+
+![Captura de pantalla](https://raw.githubusercontent.com/cbdavide/visor-shapefiles/bacfd9afc1f677868e3603e04cfa8fcb157d4933/images/screenshoot.png)
 
 ## Tecnologías
 - Python2
