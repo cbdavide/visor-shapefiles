@@ -3,7 +3,7 @@
 import sys
 
 from PyQt4.QtCore import SIGNAL, QFileInfo
-from PyQt4.QtGui import QMainWindow, QColor, QVBoxLayout, QAction, QFileDialog
+from PyQt4.QtGui import QMainWindow, QColor, QIcon, QVBoxLayout, QAction, QFileDialog
 
 from qgis.core import QgsVectorLayer, QgsVectorLayer, QgsMapLayerRegistry
 from qgis.gui import (QgsMapCanvas, QgsMapToolPan, QgsMapToolZoom, QgsMapCanvasLayer)
@@ -29,18 +29,22 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         self.layout = QVBoxLayout(self.frame)
         self.layout.addWidget(self.canvas)
 
-        self.actionAddLayer = QAction(u'Agregar capa',self.frame)
+        self.actionAddLayer = QAction(QIcon('images/mActionAddOgrLayer.svg'), u'Agregar capa',self.frame)
         self.connect(self.actionAddLayer, SIGNAL('activated()'), self.addLayer)
-        self.actionZoomIn = QAction(u'+', self.frame)
+
+        self.actionZoomIn = QAction(QIcon('images/mActionZoomIn.svg'), u'Acercar', self.frame)
         self.connect(self.actionZoomIn, SIGNAL('activated()'), self.zoomIn)
-        self.actionZoomOut = QAction(u'-', self.frame)
+
+        self.actionZoomOut = QAction(QIcon('images/mActionZoomOut.svg'), u'Alejar', self.frame)
         self.connect(self.actionZoomOut, SIGNAL('activated()'), self.zoomOut)
-        self.actionMove = QAction(u'Mover', self.frame)
+
+        self.actionMove = QAction(QIcon('images/mActionPan.svg'), u'Mover', self.frame)
         self.connect(self.actionMove, SIGNAL('activated()'), self.pan)
-        self.actionZoomFull = QAction(u'Enfocar', self.frame)
+
+        self.actionZoomFull = QAction(QIcon('images/mActionZoomFullExtent.svg'), u'Vista completa', self.frame)
         self.connect(self.actionZoomFull, SIGNAL('activated()'), self.zoomFull)
 
-        self.actionPoint = QAction('Point', self.frame)
+        self.actionPoint = QAction(QIcon('images/mActionCapturePoint.svg'), u'Capturar punto', self.frame)
         self.actionPoint.setCheckable(True)
         self.connect(self.actionPoint, SIGNAL('triggered()'), self.point)
 
