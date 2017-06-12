@@ -12,6 +12,32 @@ from visor_shapefiles_ui import Ui_MainWindow
 
 qgis_prefix = "/usr"
 
+class PointMapTool(QgsMapToolEmitPoint):
+
+    def __init__(self, canvas):
+        self.canvas = canvas
+        QgsMapToolEmitPoint.__init__(self, self.canvas)
+
+        self.point = None
+        self.m = None
+
+    def canvasPressEvent(self, e):
+        # if self.m is not None:
+        #     self.canvas.scene().removeItem(self.m)
+
+        self.point = self.toMapCoordinates(e.pos())
+        # print self.point.x(), self.point.y()
+
+        self.m = QgsVertexMarker(self.canvas)
+        self.m.setCenter(self.point)
+
+        self.m.setColor(QColor(0, 255, 0))
+        self.m.setIconSize(5)
+
+        self.m.setIconType(QgsVertexMarker.ICON_X)
+        self.m.setPenWidth(3)
+
+
 class VisorShapefiles(QMainWindow, Ui_MainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -39,18 +65,30 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         self.actionZoomFull = QAction(u'Enfocar', self.frame)
         self.connect(self.actionZoomFull, SIGNAL('activated()'), self.zoomFull)
 
+        self.actionPoint = QAction('Point', self.frame)
+        self.actionPoint.setCheckable(True)
+        self.connect(self.actionPoint, SIGNAL('triggered()'), self.point)
+
+
         self.toolbar = self.addToolBar('Map')
         self.toolbar.addAction(self.actionAddLayer)
         self.toolbar.addAction(self.actionZoomIn)
         self.toolbar.addAction(self.actionZoomOut)
         self.toolbar.addAction(self.actionMove)
         self.toolbar.addAction(self.actionZoomFull)
+        self.toolbar.addAction(self.actionPoint)
 
         self.toolPan = QgsMapToolPan(self.canvas)
         self.toolZoomIn = QgsMapToolZoom(self.canvas, False)
         self.toolZoomOut = QgsMapToolZoom(self.canvas, True)
+        self.toolPoint = PointMapTool(self.canvas)
+
+        self.toolPoint.setAction(self.actionPoint)
 
         self.layers = []
+
+    def point(self):
+        self.canvas.setMapTool(self.toolPoint)
 
     def zoomIn(self):
         self.canvas.setMapTool(self.toolZoomIn)
@@ -86,15 +124,3 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
 
         self.layers.insert(0, QgsMapCanvasLayer(layer))
         self.canvas.setLayerSet(self.layers)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    QgsApplication.setPrefixPath(qgis_prefix, True)
-    QgsApplication.initQgis()
-    window = VisorShapefiles()
-    window.move(100, 100)
-    window.show()
-
-    r = app.exec_()
-    QgsApplication.exitQgis()
-    sys.exit(r)
