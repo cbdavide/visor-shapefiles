@@ -4,14 +4,9 @@ import sys
 
 from PyQt4.QtCore import SIGNAL, QFileInfo
 from PyQt4.QtGui import QMainWindow, QColor, QIcon, QVBoxLayout, QAction, QFileDialog
-
-from qgis.core import QgsVectorLayer, QgsVectorLayer, QgsMapLayerRegistry
-from qgis.gui import (QgsMapCanvas, QgsMapToolPan, QgsMapToolZoom, QgsMapCanvasLayer)
+from PyQt4.QtGui import QApplication
 
 from WindowUI import Ui_MainWindow
-from tools import PointMapTool, PolyMapTool
-
-qgis_prefix = '/usr'
 
 class VisorShapefiles(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -20,14 +15,8 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
 
         self.setWindowTitle(u'Visor de Shapefiles')
 
-        self.canvas = QgsMapCanvas()
-        self.canvas.setCanvasColor(QColor(255, 255, 255))
-        self.canvas.enableAntiAliasing(True)
-        self.canvas.useImageToRender(False)
-        self.canvas.show()
-
         self.layout = QVBoxLayout(self.frame)
-        self.layout.addWidget(self.canvas)
+        # self.layout.addWidget(self.canvas)
 
         self.actionAddLayer = QAction(QIcon('images/mActionAddOgrLayer.svg'), u'Agregar capa',self.frame)
         self.connect(self.actionAddLayer, SIGNAL('activated()'), self.addLayer)
@@ -48,9 +37,9 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         self.actionPoint.setCheckable(True)
         self.connect(self.actionPoint, SIGNAL('triggered()'), self.point)
 
-        self.actionPoly = QAction(QIcon('images/mActionCapturePolygon.svg'), u'Capturar Polígono', self.frame)
-        self.actionPoly.setCheckable(True)
-        self.connect(self.actionPoly, SIGNAL('triggered()'), self.poly)
+        # self.actionPoly = QAction(QIcon('images/mActionCapturePolygon.svg'), u'Capturar Polígono', self.frame)
+        # self.actionPoly.setCheckable(True)
+        # self.connect(self.actionPoly, SIGNAL('triggered()'), self.poly)
 
         self.toolbar = self.addToolBar('Map')
         self.toolbar.addAction(self.actionAddLayer)
@@ -59,56 +48,34 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         self.toolbar.addAction(self.actionMove)
         self.toolbar.addAction(self.actionZoomFull)
         self.toolbar.addAction(self.actionPoint)
-        self.toolbar.addAction(self.actionPoly)
-
-        self.toolPan = QgsMapToolPan(self.canvas)
-        self.toolZoomIn = QgsMapToolZoom(self.canvas, False)
-        self.toolZoomOut = QgsMapToolZoom(self.canvas, True)
-        self.toolPoint = PointMapTool(self.canvas)
-        self.toolPoly = PolyMapTool(self.canvas)
-
-        self.toolPoint.setAction(self.actionPoint)
-        self.toolPoly.setAction(self.actionPoly)
+        # self.toolbar.addAction(self.actionPoly)
 
         self.layers = []
 
+        self.show()
+
     def poly(self):
-        self.canvas.setMapTool(self.toolPoly)
+        pass
 
     def point(self):
-        self.canvas.setMapTool(self.toolPoint)
+        pass
 
     def zoomIn(self):
-        self.canvas.setMapTool(self.toolZoomIn)
+        pass
 
     def zoomOut(self):
-        self.canvas.setMapTool(self.toolZoomOut)
+        pass
 
     def pan(self):
-        self.canvas.setMapTool(self.toolPan)
+        pass
 
     def zoomFull(self):
-        self.canvas.zoomToFullExtent()
+        pass
 
     def addLayer(self):
-        layerPath = QFileDialog.getOpenFileName(self, u'Abrir shapefile', '.', 'Shapefiles (*.shp)')
-        layerInfo = QFileInfo(layerPath)
-        layerProvider = 'ogr'
+        pass
 
-        # name = '/home/cbdavide/Documentos/Projects/shape-viewer/Colombia/Colombia.shp'
-
-        # layer = QgsVectorLayer(name, 'ejje', layerProvider)
-        layer = QgsVectorLayer(layerPath, layerInfo.fileName(), layerProvider)
-        if not layer.isValid():
-            return
-
-        # Cambiar el color del layer
-        symbol_layer = layer.rendererV2().symbols()[0].symbolLayer(0)
-        symbol_layer.setColor(QColor(176,251,163))
-
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
-        if self.canvas.layerCount() == 0:
-            self.canvas.setExtent(layer.extent())
-
-        self.layers.insert(0, QgsMapCanvasLayer(layer))
-        self.canvas.setLayerSet(self.layers)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = VisorShapefiles()
+    sys.exit(app.exec_())
