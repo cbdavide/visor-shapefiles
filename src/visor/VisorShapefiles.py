@@ -4,63 +4,11 @@ import sys
 
 from PyQt4.QtCore import SIGNAL, QFileInfo, QPoint, QByteArray
 from PyQt4.QtGui import QMainWindow, QColor, QIcon, QVBoxLayout, QAction, QFileDialog
-from PyQt4.QtGui import QApplication, QWidget, QImage
+from PyQt4.QtGui import QApplication, QWidget, QImage, QPainter
 
 from WindowUI import Ui_MainWindow
 
-import mapnik
-
-class MapnikWidget(QWidget):
-    def __init__(self, parent = None):
-        QWidget.__init__(self, parent)
-        self.map = mapnik.Map(256, 256)
-        self.qim = QImage()
-        #Drag positions
-        self.startDragPos = QPoint()
-        self.endDragPos = QPoint()
-        #Zoom poistion
-        self.zoomPos = QPoint()
-
-        self.drag = False
-        self.scale = False
-        self.total_scale = 1.0
-
-    #temp functions to try a few things
-    def createMap(self):
-        s = mapnik.Style()
-        r = mapnik.Rule()
-
-        polygon_symbolizer = mapnik.PolygonSymbolizer()
-        polygon_symbolizer.fill = mapnik.Color('#f2eff9')
-        r.symbols.append(polygon_symbolizer)
-
-        line_symbolizer = mapnik.LineSymbolizer()
-        line_symbolizer.stroke = mapnik.Color('rgb(50%, 50%, 50%)')
-        line_symbolizer.stroke_width = 0.1
-        r.symbols.append(line_symbolizer)
-
-        s.rules.append(r)
-
-        self.map.append_style('Estilo1', s)
-
-        #Loading source
-        data_source = mapnik.Shapefile(file = 'Colombia/Colombia.shp')
-        print data_source.envelope()
-
-        layer = mapnik.Layer('Colombia')
-        layer.datasource = data_source
-        layer.styles.append('Estilo1')
-
-        self.map.layers.append(layer)
-        self.map.zoom_all()
-
-        im = mapnik.Image(self.map.width, self.map.height)
-        mapnik.render(self.map, im)
-
-        self.qim.loadFromData(QByteArray(im.tostring('png')))
-        self.update()
-
-
+from mapnikwidget import MapnikWidget
 
 class VisorShapefiles(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -71,10 +19,10 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
 
         self.layout = QVBoxLayout(self.frame)
 
-        maper = MapnikWidget()
+        maper = MapnikWidget(self.frame)
         maper.createMap()
 
-        canvas = QCanvas()
+        # canvas = QCanvas()
 
         self.layout.addWidget(maper)
 
