@@ -9,8 +9,8 @@ from WindowUI import Ui_MainWindow
 import mapnik
 
 class MapnikWidget(QWidget):
-    def __init__(self, parent):
-        QWidget.__init__(self, parent)
+    def __init__(self):
+        QWidget.__init__(self)
         self.map = mapnik.Map(750, 500)
         self.map.background = mapnik.Color('steelblue')
         self.qim = QImage()
@@ -23,6 +23,7 @@ class MapnikWidget(QWidget):
         self.timer = QTimer()
         self.timer.timeout.connect(self.updateMap)
 
+        self.dragEnabled = False
         self.drag = False
         self.scale = False
         self.total_scale = 1.0

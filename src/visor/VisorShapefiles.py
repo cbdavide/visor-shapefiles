@@ -3,12 +3,56 @@
 import sys
 
 from PyQt4.QtCore import SIGNAL, QFileInfo, QPoint, QByteArray
-from PyQt4.QtGui import QMainWindow, QColor, QIcon, QVBoxLayout, QAction, QFileDialog
-from PyQt4.QtGui import QApplication, QWidget, QImage, QPainter
+from PyQt4.QtGui import QMainWindow, QColor, QVBoxLayout, QAction, QFileDialog
+from PyQt4.QtGui import QApplication, QWidget, QImage, QPainter, QToolBar
+
+from util import IconFactory
 
 from WindowUI import Ui_MainWindow
 
 from mapnikwidget import MapnikWidget
+
+class MapToolBar(QToolBar):
+    def __init__(self, title, parent):
+        QToolBar.__init__(self, title, parent)
+
+        self.actions = []
+        self.parent = parent
+
+        self.buildActions()
+        self.configActions()
+        self.addActions()
+
+    def buildActions(self):
+        self.actions.append(QAction(IconFactory.createOpenIcon(), u'Agregar capa',self))
+        self.actions.append(QAction(IconFactory.cretatePanIcon(), u'Mover', self))
+        self.actions.append(QAction(IconFactory.createZoomInIcon(), u'Acercar', self))
+        self.actions.append(QAction(IconFactory.createZoomOutIcon(), u'Alejar', self))
+        self.actions.append(QAction(IconFactory.createZoomFullIcon(), u'Vista Completa', self))
+        self.actions.append(QAction(IconFactory.createPointIcon(), u'Capturar Punto', self))
+
+    def configActions(self):
+        self.connect(self.actions[0], SIGNAL('triggered()'), self.parent.addLayer)
+
+        self.actions[1].setCheckable(True);
+        self.connect(self.actions[1], SIGNAL('triggered()'), self.parent.pan)
+
+        self.actions[2].setCheckable(True);
+        self.connect(self.actions[2], SIGNAL('triggered()'), self.parent.zoomIn)
+
+        self.actions[3].setCheckable(True);
+        self.connect(self.actions[3], SIGNAL('triggered()'), self.parent.zoomOut)
+
+        self.connect(self.actions[4], SIGNAL('triggered()'), self.parent.zoomFull)
+
+        self.actions[5].setCheckable(True)
+        self.connect(self.actions[5], SIGNAL('triggered()'), self.parent.point)
+
+
+    def addActions(self):
+        '''Add the actions into the toolbar'''
+        for action in self.actions:
+            self.addAction(action)
 
 class VisorShapefiles(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -19,54 +63,16 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
 
         self.layout = QVBoxLayout(self.frame)
 
-        maper = MapnikWidget(self.frame)
-        maper.createMap()
+        self.map = MapnikWidget()
+        self.map.createMap()
 
-        # canvas = QCanvas()
+        self.layout.addWidget(self.map)
 
-        self.layout.addWidget(maper)
+        self.toolbar = MapToolBar('Barra de Herramientas', self)
+        self.addToolBar(self.toolbar)
 
-
-
-        # TODO: Move all the declarations of the actions
-        self.actionAddLayer = QAction(QIcon('images/mActionAddOgrLayer.svg'), u'Agregar capa',self.frame)
-        self.connect(self.actionAddLayer, SIGNAL('activated()'), self.addLayer)
-
-        self.actionZoomIn = QAction(QIcon('images/mActionZoomIn.svg'), u'Acercar', self.frame)
-        self.connect(self.actionZoomIn, SIGNAL('activated()'), self.zoomIn)
-
-        self.actionZoomOut = QAction(QIcon('images/mActionZoomOut.svg'), u'Alejar', self.frame)
-        self.connect(self.actionZoomOut, SIGNAL('activated()'), self.zoomOut)
-
-        self.actionMove = QAction(QIcon('images/mActionPan.svg'), u'Mover', self.frame)
-        self.connect(self.actionMove, SIGNAL('activated()'), self.pan)
-
-        self.actionZoomFull = QAction(QIcon('images/mActionZoomFullExtent.svg'), u'Vista Completa', self.frame)
-        self.connect(self.actionZoomFull, SIGNAL('activated()'), self.zoomFull)
-
-        self.actionPoint = QAction(QIcon('images/mActionCapturePoint.svg'), u'Capturar Punto', self.frame)
-        self.actionPoint.setCheckable(True)
-        self.connect(self.actionPoint, SIGNAL('triggered()'), self.point)
-
-        # self.actionPoly = QAction(QIcon('images/mActionCapturePolygon.svg'), u'Capturar Polígono', self.frame)
-        # self.actionPoly.setCheckable(True)
-        # self.connect(self.actionPoly, SIGNAL('triggered()'), self.poly)
-
-        self.toolbar = self.addToolBar('Map')
-        self.toolbar.addAction(self.actionAddLayer)
-        self.toolbar.addAction(self.actionZoomIn)
-        self.toolbar.addAction(self.actionZoomOut)
-        self.toolbar.addAction(self.actionMove)
-        self.toolbar.addAction(self.actionZoomFull)
-        self.toolbar.addAction(self.actionPoint)
-        # self.toolbar.addAction(self.actionPoly)
-
-        self.layers = []
 
         self.show()
-
-    def poly(self):
-        pass
 
     def point(self):
         pass
