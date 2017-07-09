@@ -91,7 +91,7 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
             self.map.dragEnabled = False
 
     def zoomFull(self):
-        pass
+        self.map.zoomAll()
 
     def addLayer(self):
         pass

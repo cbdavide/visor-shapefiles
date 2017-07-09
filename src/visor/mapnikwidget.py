@@ -83,6 +83,10 @@ class MapnikWidget(QWidget):
             self.endDragPos = event.pos()
             self.updateMap()
 
+    def zoomAll(self):
+        self.map.zoom_all()
+        self.updateMap()
+
     def updateMap(self):
         self.timer.stop()
 
@@ -139,6 +143,4 @@ class MapnikWidget(QWidget):
         layer.styles.append('Estilo1')
 
         self.map.layers.append(layer)
-        self.map.zoom_all()
-
-        self.updateMap()
+        self.zoomAll()
