@@ -7,6 +7,7 @@ from PyQt4.QtGui import QApplication, QWidget, QImage, QPainter, QMatrix
 from WindowUI import Ui_MainWindow
 
 import mapnik
+import styles
 
 class MapnikWidget(QWidget):
     def __init__(self):
@@ -27,6 +28,9 @@ class MapnikWidget(QWidget):
         self.drag = False
         self.scale = False
         self.total_scale = 1.0
+
+        basicStyle = styles.basicStyle()
+        self.map.append_style('estilo_base', basicStyle)
 
         self.updateMap()
 
@@ -115,32 +119,28 @@ class MapnikWidget(QWidget):
         self.qim.loadFromData(QByteArray(im.tostring('png')))
         self.update()
 
-    #temp functions to try a few things
-    def createMap(self):
-        s = mapnik.Style()
-        r = mapnik.Rule()
+    def addVectorLayer(self, path, name):
+        data_source = mapnik.Shapefile(file = str(path))
+        layer = mapnik.Layer(str(name))
 
-        polygon_symbolizer = mapnik.PolygonSymbolizer()
-        polygon_symbolizer.fill = mapnik.Color('#f2eff9')
-        r.symbols.append(polygon_symbolizer)
-
-        line_symbolizer = mapnik.LineSymbolizer()
-        line_symbolizer.stroke = mapnik.Color('rgb(50%, 50%, 50%)')
-        line_symbolizer.stroke_width = 0.1
-        r.symbols.append(line_symbolizer)
-
-        s.rules.append(r)
-
-        self.map.append_style('Estilo1', s)
-
-        #Loading source
-        data_source = mapnik.Shapefile(file = '110m-admin-0-countries/ne_110m_admin_0_countries.shp')
-        print data_source.envelope()
-
-        layer = mapnik.Layer('Colombia')
         layer.datasource = data_source
-        print "\tLayer: ", layer.srs
-        layer.styles.append('Estilo1')
+        layer.styles.append('estilo_base')
 
         self.map.layers.append(layer)
         self.zoomAll()
+
+
+    #temp functions to try a few things
+    # def createMap(self):
+    #
+    #     #Loading source
+    #     data_source = mapnik.Shapefile(file = '110m-admin-0-countries/ne_110m_admin_0_countries.shp')
+    #     print data_source.envelope()
+    #
+    #     layer = mapnik.Layer('Colombia')
+    #     layer.datasource = data_source
+    #     print "\tLayer: ", layer.srs
+    #     layer.styles.append('Estilo1')
+    #
+    #     self.map.layers.append(layer)
+    #     self.zoomAll()

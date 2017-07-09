@@ -64,7 +64,7 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         self.layout = QVBoxLayout(self.frame)
 
         self.map = MapnikWidget()
-        self.map.createMap()
+        # self.map.createMap()
 
         self.layout.addWidget(self.map)
 
@@ -94,7 +94,9 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         self.map.zoomAll()
 
     def addLayer(self):
-        pass
+        layerPath = QFileDialog.getOpenFileName(self, u'Abrir shapefile', '.', 'Shapefiles (*.shp)')
+        layerInfo = QFileInfo(layerPath)
+        self.map.addVectorLayer(layerPath, layerInfo.fileName())
 
     def safeCheckAction(self, new):
         for action in self.toolbar.actions:
