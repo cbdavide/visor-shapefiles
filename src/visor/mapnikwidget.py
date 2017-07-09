@@ -66,6 +66,7 @@ class MapnikWidget(QWidget):
 
     def mousePressEvent(self, event):
         if self.dragEnabled and event.button() == Qt.LeftButton:
+            self.setCursor(Qt.ClosedHandCursor)
             self.startDragPos = event.pos()
             self.drag = True
         else:
@@ -85,6 +86,7 @@ class MapnikWidget(QWidget):
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.endDragPos = event.pos()
+            self.setCursor(Qt.OpenHandCursor)
             self.updateMap()
 
     def zoomAll(self):

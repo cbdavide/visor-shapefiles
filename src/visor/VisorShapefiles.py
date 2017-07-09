@@ -2,7 +2,7 @@
 
 import sys
 
-from PyQt4.QtCore import SIGNAL, QFileInfo, QPoint, QByteArray
+from PyQt4.QtCore import SIGNAL, QFileInfo, QPoint, QByteArray, Qt
 from PyQt4.QtGui import QMainWindow, QColor, QVBoxLayout, QAction, QFileDialog
 from PyQt4.QtGui import QApplication, QWidget, QImage, QPainter, QToolBar
 
@@ -87,7 +87,9 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         if self.toolbar.actions[1].isChecked():
             self.map.dragEnabled = True
             self.safeCheckAction(self.toolbar.actions[1])
+            self.map.setCursor(Qt.OpenHandCursor)
         else:
+            self.map.setCursor(Qt.ArrowCursor)
             self.map.dragEnabled = False
 
     def zoomFull(self):
