@@ -34,7 +34,7 @@ class MapToolBar(QToolBar):
     def configActions(self):
         self.connect(self.actions[0], SIGNAL('triggered()'), self.parent.addLayer)
 
-        self.actions[1].setCheckable(True);
+        self.actions[1].setCheckable(True)
         self.connect(self.actions[1], SIGNAL('triggered()'), self.parent.pan)
 
         self.actions[2].setCheckable(True);
@@ -84,13 +84,22 @@ class VisorShapefiles(QMainWindow, Ui_MainWindow):
         pass
 
     def pan(self):
-        pass
+        if self.toolbar.actions[1].isChecked():
+            self.map.dragEnabled = True
+            self.safeCheckAction(self.toolbar.actions[1])
+        else:
+            self.map.dragEnabled = False
 
     def zoomFull(self):
         pass
 
     def addLayer(self):
         pass
+
+    def safeCheckAction(self, new):
+        for action in self.toolbar.actions:
+            if action != new and action.isChecked():
+                action.toggle()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -61,7 +61,7 @@ class MapnikWidget(QWidget):
         self.timer.start(400)
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if self.dragEnabled and event.button() == Qt.LeftButton:
             self.startDragPos = event.pos()
             self.drag = True
         else:
@@ -92,6 +92,7 @@ class MapnikWidget(QWidget):
             dpos = self.endDragPos - self.startDragPos
             self.map.pan(cx - dpos.x(), cy - dpos.y())
             self.drag = False
+
         elif self.scale:
             ma = QMatrix()
             ma.translate(self.zoomPos.x(), self.zoomPos.y())
