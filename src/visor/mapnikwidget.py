@@ -4,10 +4,22 @@ from PyQt4.QtCore import SIGNAL, QFileInfo, QPoint, QByteArray, Qt, QRectF, QTim
 from PyQt4.QtGui import QMainWindow, QColor, QIcon, QVBoxLayout, QAction, QFileDialog
 from PyQt4.QtGui import QApplication, QWidget, QImage, QPainter, QMatrix
 
+from shapely.geometry import Point
+
 from WindowUI import Ui_MainWindow
 
 import mapnik
 import styles
+
+class PointDatasource(mapnik.PythonDatasource):
+    def __init__(self, point):
+        super(PointDatasource, self).__init__()
+        self.point = point
+
+    def features(self, query):
+        return mapnik.PythonDatasource.wkb_features(
+            features = ( Point(point.x, point.y).wkb, { 'label': 'Punto'} )
+        )
 
 class MapnikWidget(QWidget):
     def __init__(self):
@@ -69,14 +81,20 @@ class MapnikWidget(QWidget):
             self.setCursor(Qt.ClosedHandCursor)
             self.startDragPos = event.pos()
             self.drag = True
-        else:
-            # transform = self.map.view_transform()
-            coord = self.map.view_transform().backward(mapnik.Coord(event.pos().x(), event.pos().y()))
-            print coord
 
-            print '>', event.pos().x(), event.pos().y()
-            # print self.map.envelope().center()
-            # print mapnik.Coord(event.pos().x(), event.pos().y())
+        else:
+
+            screenCord = mapnik.Coord(event.pos().x(), event.pos().y())
+            mapCoord = self.map.view_transform().backward(screenCord)
+
+            data_source = mapnik.Python(factory = 'PointDatasource', point = mapCoord)
+            layer = mapnik.Layer('python')
+            layer.datasource = data_source
+
+            layer.styles.append('estilo_base')
+
+            self.map.layers.append(layer)
+            # self.zoomAll()
 
     def mouseMoveEvent(self, event):
         if self.drag:
@@ -126,6 +144,7 @@ class MapnikWidget(QWidget):
         layer = mapnik.Layer(str(name))
 
         layer.datasource = data_source
+        print '\n\n', layer.srs
         layer.styles.append('estilo_base')
 
         self.map.layers.append(layer)
